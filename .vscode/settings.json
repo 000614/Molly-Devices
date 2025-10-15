@@ -23,6 +23,9 @@
     "feature_input_handler.h": "c",
     "app_logic.h": "c",
     "gpio_num.h": "c",
-    "esp_lcd_panel_ops.h": "c"
+    "esp_lcd_panel_ops.h": "c",
+    "event_manager.h": "c",
+    "freertos.h": "c",
+    "task.h": "c"
   }
 }

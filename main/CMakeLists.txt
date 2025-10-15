@@ -2,7 +2,7 @@
 idf_component_register(SRCS "app_main.c"
                       INCLUDE_DIRS "."
                       REQUIRES feature_anim_player 
-                               feature_input_handler 
+                               button 
                                app_logic 
                                storage_manager
                                fatfs

@@ -5,6 +5,6 @@
  * @brief 启动输入处理任务
  * 
  */
-void input_handler_task_start(void);
+void button_scan_task_start(void);
 
 #endif // FEATURE_INPUT_HANDLER_H

@@ -2,13 +2,13 @@
 
 // 包含所有需要启动的组件
 #include "bsp_button.h"
-
-
 #include "event_manager.h"
 #include "feature_anim_player.h"
-#include "feature_input_handler.h"
+#include "button.h"
 #include "app_logic.h"
 #include "storage_manager.h"
+
+
 #define TAG "MAIN_APP"
 
 void app_main(void)
@@ -27,7 +27,7 @@ void app_main(void)
 
     
     anim_player_task_start();
-    input_handler_task_start();
+    button_scan_task_start();
     
     // 4. 最后启动核心逻辑任务，让它开始调度
     app_logic_task_start();

@@ -1,4 +1,4 @@
-#include "feature_input_handler.h"
+#include "button.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -42,7 +42,7 @@ static void button_scan_task(void *pvParameters)
     }
 }
 
-void input_handler_task_start(void)
+void button_scan_task_start(void)
 {
     xTaskCreate(
         button_scan_task,
