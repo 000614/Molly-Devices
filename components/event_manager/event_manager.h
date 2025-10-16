@@ -8,6 +8,8 @@
 typedef enum {
     EVENT_NONE = 0,
     EVENT_BUTTON_SHORT_PRESS,   // 按钮短按事件
+    EVENT_BUTTON_LONG_PRESS,    // <-- 新增：按钮长按事件
+    EVENT_BUTTON_DOUBLE_CLICK,  // <-- 新增：按钮双击事件
     // 未来可以在这里添加更多事件，例如：
     // EVENT_SENSOR_DATA_READY,
     // EVENT_WIFI_CONNECTED,

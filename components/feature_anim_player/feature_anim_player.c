@@ -220,13 +220,15 @@ void anim_player_switch_animation(anim_type_t anim_type) {
 }
 
 esp_err_t anim_player_display_off(void) {
-    g_target_on_off_state = false;
+    // g_target_on_off_state = false;
+    bsp_lcd_set_power(0);
     ESP_LOGI(TAG, "请求关闭屏幕");
     return ESP_OK;
 }
 
 esp_err_t anim_player_display_on(void) {
-    g_target_on_off_state = true;
+    // g_target_on_off_state = true;
+    bsp_lcd_set_power(1);
     ESP_LOGI(TAG, "请求开启屏幕");
     return ESP_OK;
 }

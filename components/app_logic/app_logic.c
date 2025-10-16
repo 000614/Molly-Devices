@@ -41,7 +41,17 @@ static void main_event_handler_task(void *pvParameters)
                     // 调用动画播放器组件的API
                     anim_player_switch_animation(current_anim);
                     break;
+
+                case EVENT_BUTTON_LONG_PRESS:
+                    ESP_LOGI(TAG, "收到长按事件，关闭屏幕显示...");
+                    anim_player_display_off();
+                    break;
                 
+                case EVENT_BUTTON_DOUBLE_CLICK:
+                    ESP_LOGI(TAG, "收到双击事件，开启屏幕显示...");
+                    anim_player_display_on();
+                    break;
+
                 // 未来可以在这里添加对其他事件的处理...
                 
                 default:

@@ -29,6 +29,11 @@ static esp_lcd_panel_io_handle_t s_io_handle = NULL;
 static esp_lcd_panel_handle_t s_panel_handle = NULL;
 static SemaphoreHandle_t s_dma_done_sem = NULL;
 
+// [新增] 1. 定义一个互斥锁句柄，用于保护对LCD硬件的并发访问
+static SemaphoreHandle_t s_lcd_mutex = NULL;
+
+static uint8_t s_last_brightness = 255; 
+
 // DMA 完成回调函数
 static bool IRAM_ATTR lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx)
 {
@@ -38,10 +43,32 @@ static bool IRAM_ATTR lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel_io, esp_
     return (task_woken == pdTRUE);
 }
 
+
+// [新增] 2. 创建一个内部的、不带锁的亮度设置函数
+// 这样做的目的是为了避免在 set_power 函数中产生死锁（自己锁住自己）
+static esp_err_t _bsp_lcd_set_brightness_internal(uint8_t brightness)
+{
+    // 当设置的亮度值大于0时，我们将其记录下来，以便开屏时恢复
+    if (brightness > 0) {
+        s_last_brightness = brightness;
+    }
+    
+    // 0xc9 是 GC9A01 芯片 "Write Display Brightness" 的命令
+    return esp_lcd_panel_io_tx_param(s_io_handle, 0xc9, (uint8_t[]){brightness}, 1);
+}
+
+
 // --- 公共 API 实现 ---
 
 esp_err_t bsp_lcd_init(void)
 {
+    // [新增] 3. 在初始化函数的最开始，创建互斥锁
+    s_lcd_mutex = xSemaphoreCreateMutex();
+    if (s_lcd_mutex == NULL) {
+        ESP_LOGE(TAG, "创建 LCD 互斥锁失败!");
+        return ESP_FAIL;
+    }
+
     s_dma_done_sem = xSemaphoreCreateBinary();
     if (s_dma_done_sem == NULL) {
         ESP_LOGE(TAG, "创建DMA信号量失败!");
@@ -67,7 +94,7 @@ esp_err_t bsp_lcd_init(void)
         .pclk_hz = 60 * 1000 * 1000,
         .trans_queue_depth = 1,
         .on_color_trans_done = lcd_trans_done_cb,
-        .user_ctx = s_dma_done_sem, // 传递内部信号量
+        .user_ctx = s_dma_done_sem,
         .lcd_cmd_bits = 8,
         .lcd_param_bits = 8,
     };
@@ -87,6 +114,9 @@ esp_err_t bsp_lcd_init(void)
     ESP_ERROR_CHECK(esp_lcd_panel_mirror(s_panel_handle, true, false));
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(s_panel_handle, true));
 
+    // 初始化最后，设置一个默认的亮度，确保背光开启
+    bsp_lcd_set_brightness(255);
+
     ESP_LOGI(TAG, "GC9A01 LCD初始化完成");
     return ESP_OK;
 }
@@ -101,24 +131,56 @@ uint16_t bsp_lcd_get_height(void)
     return LCD_V_RES;
 }
 
+// [修改] 4. 在 draw_bitmap 函数中加入互斥锁保护
 esp_err_t bsp_lcd_draw_bitmap(int x_start, int y_start, int x_end, int y_end, const void *color_data)
 {
-    return esp_lcd_panel_draw_bitmap(s_panel_handle, x_start, y_start, x_end, y_end, color_data);
+    esp_err_t ret = ESP_FAIL;
+    // 获取锁，如果锁被其他任务占用，此任务将在此等待
+    if (xSemaphoreTake(s_lcd_mutex, portMAX_DELAY) == pdTRUE) {
+        // --- 临界区开始 ---
+        ret = esp_lcd_panel_draw_bitmap(s_panel_handle, x_start, y_start, x_end, y_end, color_data);
+        // --- 临界区结束 ---
+        
+        // 释放锁，让其他任务可以访问LCD
+        xSemaphoreGive(s_lcd_mutex);
+    }
+    return ret;
 }
 
+// 这个函数操作的是DMA完成信号量，本身就是一种同步机制，不需要再加互斥锁
 void bsp_lcd_wait_for_draw_done(void)
 {
     xSemaphoreTake(s_dma_done_sem, portMAX_DELAY);
 }
 
+// [修改] 5. 在 set_power 函数中加入互斥锁保护
 esp_err_t bsp_lcd_set_power(bool on)
 {
-    return esp_lcd_panel_disp_on_off(s_panel_handle, on);
+    esp_err_t ret = ESP_FAIL;
+    if (xSemaphoreTake(s_lcd_mutex, portMAX_DELAY) == pdTRUE) {
+        // --- 临界区开始 ---
+        if (on) {
+            ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(s_panel_handle, true));
+            ret = _bsp_lcd_set_brightness_internal(s_last_brightness); // 调用内部函数
+        } else {
+            ESP_ERROR_CHECK(_bsp_lcd_set_brightness_internal(0)); // 调用内部函数
+            ret = esp_lcd_panel_disp_on_off(s_panel_handle, false);
+        }
+        // --- 临界区结束 ---
+        xSemaphoreGive(s_lcd_mutex);
+    }
+    return ret;
 }
 
+// [修改] 6. 公开的 set_brightness 函数也需要互斥锁保护
 esp_err_t bsp_lcd_set_brightness(uint8_t brightness)
 {
-    // TODO: 在此处实现通过PWM控制背光的硬件逻辑
-    ESP_LOGI(TAG, "设置亮度为 %d (占位实现)", brightness);
-    return ESP_OK;
+    esp_err_t ret = ESP_FAIL;
+    if (xSemaphoreTake(s_lcd_mutex, portMAX_DELAY) == pdTRUE) {
+        // --- 临界区开始 ---
+        ret = _bsp_lcd_set_brightness_internal(brightness);
+        // --- 临界区结束 ---
+        xSemaphoreGive(s_lcd_mutex);
+    }
+    return ret;
 }
