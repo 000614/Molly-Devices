@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "IDF Clean",
+            "type": "shell",
+            // 这里是关键修改：使用正确的变量名 idf.espIdfPathWin
+            "command": "echo [TASK LOG] Starting 'IDF Clean'... && call ${config:idf.espIdfPathWin}export.bat && echo [TASK LOG] Environment set. Executing clean... && idf.py clean && echo [TASK LOG] 'idf.py clean' finished.",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": true
+            },
+            // 明确指定使用 Windows 的 cmd.exe
+            "options": {
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": ["/d", "/c"]
+                }
+            }
+        }
+    ]
+}

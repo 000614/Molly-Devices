@@ -28,5 +28,23 @@
     "freertos.h": "c",
     "task.h": "c",
     "esp_log.h": "c"
-  }
+  },
+  "idf.currentSetup": "D:/Espressif/frameworks/esp-idf-v5.4.2/",
+    "actionButtons": {
+        "commands": [
+            {
+                "name": "$(trash)Clean",
+                "color": "yellow",
+                
+                // 关键修正 1: 指定这是一个 VS Code 内部命令
+                "useVsCodeApi": true,
+
+                // 告诉 VS Code 要执行哪个内部命令
+                "command": "workbench.action.tasks.runTask",
+
+                // 关键修正 2: 使用 "args" 传递任务名称
+                "args": ["IDF Clean"]
+            }
+        ]
+    }
 }

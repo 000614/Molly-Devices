@@ -4,7 +4,7 @@
 #include "esp_log.h"
 #include "freertos/queue.h" // 明确包含 queue.h
 
-#include "button.h"
+#include "feature_button.h"
 // 引用依赖组件的头文件
 #include "bsp_button.h"
 #include "app_events.h"

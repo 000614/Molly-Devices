@@ -3,7 +3,7 @@
 // 包含所有需要启动的组件
 #include "bsp_button.h"
 #include "feature_anim_player.h"
-#include "button.h"
+#include "feature_button.h"
 #include "app_logic.h"
 #include "storage_manager.h"
 

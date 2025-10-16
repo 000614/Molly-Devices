@@ -68,7 +68,7 @@ void app_logic_init_start(void)
 // 【关键改动】实现获取队列句柄的函数
 QueueHandle_t app_logic_get_event_queue(void)
 {
-    // 这是一个很好的防御性编程实践，确保队列已经被创建
+    // 确保队列已经被创建
     configASSERT(s_app_event_queue != NULL);
     return s_app_event_queue;
 }
