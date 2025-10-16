@@ -1,6 +1,6 @@
 #include "app_logic.h"
 #include "esp_log.h"
-
+#include "feature_motor.h" // 包含震动马达功能层头文件
 // 引用依赖组件的头文件
 #include "event_manager.h"
 // #include "feature_anim_player.h" // 需要调用它的API来切换动画
@@ -40,11 +40,13 @@ static void main_event_handler_task(void *pvParameters)
                     
                     // // 调用动画播放器组件的API
                     // anim_player_switch_animation(current_anim);
+                    mada_stop();
                     break;
 
                 case EVENT_BUTTON_LONG_PRESS:
                     ESP_LOGI(TAG, "收到长按事件，关闭屏幕显示...");
                     // anim_player_set_brightness(0x00);
+                    mada_continuous_vibrate();
                     break;
                 
                 case EVENT_BUTTON_DOUBLE_CLICK:
