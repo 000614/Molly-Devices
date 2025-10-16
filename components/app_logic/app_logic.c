@@ -9,6 +9,12 @@
 
 static void main_event_handler_task(void *pvParameters)
 {
+    // 通过函数获取句柄再发送消息
+    QueueHandle_t queue = get_event_queue();
+    // if (queue != NULL) { // 最好增加一个检查
+    //     xQueueSend(queue, &event, portMAX_DELAY);
+    // }
+
     AppEvent_t received_event;
     // 用于追踪当前动画状态，以便循环切换
     anim_type_t current_anim = ANIM_TYPE_AINI; 
@@ -18,7 +24,7 @@ static void main_event_handler_task(void *pvParameters)
     while(1) {
         // 从队列中等待并接收消息
         // portMAX_DELAY 表示如果队列是空的，任务会进入阻塞状态，不消耗CPU
-        if (xQueueReceive(g_app_event_queue, &received_event, portMAX_DELAY) == pdPASS) {
+        if (xQueueReceive(queue, &received_event, portMAX_DELAY) == pdPASS) {
             
             switch (received_event.event_type) {
                 

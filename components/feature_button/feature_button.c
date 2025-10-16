@@ -29,9 +29,11 @@ static void button_scan_task(void *pvParameters)
                 .data_len = 0
             };
             
-            // 将消息发送到全局队列
-            xQueueSend(g_app_event_queue, &event_msg, portMAX_DELAY);
-
+            // 通过函数获取句柄再发送消息
+            QueueHandle_t queue = get_event_queue();
+            if (queue != NULL) { // 最好增加一个检查
+                xQueueSend(queue, &event_msg, portMAX_DELAY);
+            }
             // 简单的软件消抖
             vTaskDelay(pdMS_TO_TICKS(50));
         }

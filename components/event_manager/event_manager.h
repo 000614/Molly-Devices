@@ -20,8 +20,8 @@ typedef struct {
     uint32_t    data_len;   // 可选，数据长度
 } AppEvent_t;
 
-// 3. 声明一个全局的消息队列句柄
-extern QueueHandle_t g_app_event_queue;
+// 5. 新增一个函数声明，用于获取消息队列句柄
+QueueHandle_t get_event_queue(void); // <-- 新增这一行
 
 // 4. 初始化函数声明
 void event_queue_init(void);
