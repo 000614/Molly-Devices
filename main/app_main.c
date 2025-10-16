@@ -13,24 +13,23 @@
 
 void app_main(void)
 {
-    // 1. 初始化硬件 (BSP层)
     ESP_ERROR_CHECK(storage_init()); 
     // anim_player_init() 内部已经调用了 bsp_lcd_init()
     ESP_ERROR_CHECK(bsp_button_init()); 
-
-    // 2. 初始化核心框架
-    event_queue_init();
-
-    // 3. 初始化并启动所有功能/服务任务
     ESP_ERROR_CHECK(anim_player_init());
 
+    // 2. 初始化消息队列
+    event_queue_init();
 
     
+
+    // 消费者先启动
+    app_logic_task_start();
+    
+    // 3. 初始化并启动所有功能/服务任务
     anim_player_task_start();
     button_scan_task_start();
     
-    // 4. 最后启动核心逻辑任务，让它开始调度
-    app_logic_task_start();
 
     ESP_LOGI(TAG, "所有任务已启动，系统运行中...");
 }
