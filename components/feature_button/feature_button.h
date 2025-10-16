@@ -1,11 +1,10 @@
-#ifndef BUTTON_H
-#define BUTTON_H
-#include "freertos/FreeRTOS.h"
-#include "freertos/queue.h"
+#ifndef FEATURE_INPUT_HANDLER_H
+#define FEATURE_INPUT_HANDLER_H
+
 /**
- * @brief 启动按钮扫描任务
+ * @brief 启动输入处理任务
  * 
  */
-void button_scan_task_start(QueueHandle_t queue_to_use);
+void button_scan_task_start(void);
 
-#endif // BUTTON_H
+#endif // FEATURE_INPUT_HANDLER_H

@@ -6,5 +6,5 @@ idf_component_register(SRCS "app_main.c"
                                app_logic 
                                storage_manager
                                fatfs
-                               
+                               event_manager
                                )

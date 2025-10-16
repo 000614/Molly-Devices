@@ -1,24 +1,17 @@
-
+#include "feature_button.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
-#include "freertos/queue.h" // 明确包含 queue.h
 
 #include "feature_button.h"
 // 引用依赖组件的头文件
 #include "bsp_button.h"
-#include "app_events.h"
+#include "event_manager.h"
 
-#define TAG "BUTTON"
+#define TAG "INPUT_HANDLER"
 
 static void button_scan_task(void *pvParameters)
 {
-        // 将传入的 void* 参数强制转换回它本来的类型：QueueHandle_t
-    QueueHandle_t event_queue = (QueueHandle_t)pvParameters;
-    
-    // 断言检查，确保传入的队列句柄是有效的
-    configASSERT(event_queue != NULL);
-
     ESP_LOGI(TAG, "按键扫描任务已启动");
     bool last_button_state = false;
 
@@ -36,8 +29,8 @@ static void button_scan_task(void *pvParameters)
                 .data_len = 0
             };
             
-            // 【关键改动】使用从参数中获取的局部队列句柄，而不是全局变量
-            xQueueSend(event_queue, &event_msg, portMAX_DELAY);
+            // 将消息发送到全局队列
+            xQueueSend(g_app_event_queue, &event_msg, portMAX_DELAY);
 
             // 简单的软件消抖
             vTaskDelay(pdMS_TO_TICKS(50));
@@ -50,15 +43,13 @@ static void button_scan_task(void *pvParameters)
     }
 }
 
-// 启动函数现在需要接收一个队列句柄作为参数
-void button_scan_task_start(QueueHandle_t queue_to_use)
+void button_scan_task_start(void)
 {
-    // 在创建任务时，将队列句柄作为参数传递进去
     xTaskCreate(
         button_scan_task,
         "btn_scan_task",
         8192,
-        (void *)queue_to_use, // 将队列句柄作为参数传递
+        NULL,
         5,
         NULL
     );
