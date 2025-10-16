@@ -25,7 +25,7 @@
 - **`event_manager`**: 一个轻量级的事件分发器，用于实现组件间的异步通信和解耦。
 - **`feature_anim_player`**: 动画播放器，用于驱动显示或灯光效果。
 - **`feature_button`**: 通用按键驱动组件，支持按键事件的注册和回调。
-- **`feature_buzzer`**: 蜂鸣器驱动，用于播放提示音。
+- **`feature_buzzer`**: 蜂鸣器驱动，用于播放提示音，已移除。
 - **`feature_motor`**: 电机驱动与控制模块。
 - **`storage_manager`**: 存储管理器，封装了对设备内部 Flash 或外部存储介质的读写操作。
 
@@ -64,7 +64,7 @@
 | `bsp` | ✅ 已完成 | - | 完成硬件初始化配置 |
 | `event_manager` | ✅ 已完成 | - | 实现事件注册、分发机制 |
 | `feature_button` | ✅ 已完成 | - | 实现按键驱动及事件上报 |
-| `feature_buzzer` | ✅ 已完成 | - | 实现蜂鸣器驱动 |
+| `feature_buzzer` | 已移除 | - | 蜂鸣器驱动 |
 | `feature_motor` | ✅ 已完成 | - | 实现电机驱动 |
 | `storage_manager` | ✅ 已完成 | - | 封装存储接口 |
 | `feature_anim_player` | ✅ 已完成 | - | 实现动画播放逻辑 |
