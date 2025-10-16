@@ -3,7 +3,7 @@
 
 // 引用依赖组件的头文件
 #include "event_manager.h"
-#include "feature_anim_player.h" // 需要调用它的API来切换动画
+// #include "feature_anim_player.h" // 需要调用它的API来切换动画
 
 #define TAG "APP_LOGIC"
 
@@ -17,7 +17,7 @@ static void main_event_handler_task(void *pvParameters)
 
     AppEvent_t received_event;
     // 用于追踪当前动画状态，以便循环切换
-    anim_type_t current_anim = ANIM_TYPE_AINI; 
+    // anim_type_t current_anim = ANIM_TYPE_AINI; 
 
     ESP_LOGI(TAG, "核心逻辑任务已启动，等待事件...");
 
@@ -29,27 +29,27 @@ static void main_event_handler_task(void *pvParameters)
             switch (received_event.event_type) {
                 
                 case EVENT_BUTTON_SHORT_PRESS:
-                    ESP_LOGI(TAG, "收到按键事件，准备切换动画...");
+                    // ESP_LOGI(TAG, "收到按键事件，准备切换动画...");
                     
-                    // 简单的循环切换动画逻辑
-                    current_anim++;
-                    // 假设 ANIM_TYPE_ZUOGUOYOUPAN 是最后一个动画, 请根据你的枚举调整
-                    if (current_anim > ANIM_TYPE_ZUOGUOYOUPAN) { 
-                        current_anim = ANIM_TYPE_AINI; // 回到第一个
-                    }
+                    // // 简单的循环切换动画逻辑
+                    // current_anim++;
+                    // // 假设 ANIM_TYPE_ZUOGUOYOUPAN 是最后一个动画, 请根据你的枚举调整
+                    // if (current_anim > ANIM_TYPE_ZUOGUOYOUPAN) { 
+                    //     current_anim = ANIM_TYPE_AINI; // 回到第一个
+                    // }
                     
-                    // 调用动画播放器组件的API
-                    anim_player_switch_animation(current_anim);
+                    // // 调用动画播放器组件的API
+                    // anim_player_switch_animation(current_anim);
                     break;
 
                 case EVENT_BUTTON_LONG_PRESS:
                     ESP_LOGI(TAG, "收到长按事件，关闭屏幕显示...");
-                    anim_player_display_off();
+                    // anim_player_set_brightness(0x00);
                     break;
                 
                 case EVENT_BUTTON_DOUBLE_CLICK:
                     ESP_LOGI(TAG, "收到双击事件，开启屏幕显示...");
-                    anim_player_display_on();
+                    // anim_player_set_brightness(0xFF);
                     break;
 
                 // 未来可以在这里添加对其他事件的处理...

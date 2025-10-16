@@ -17,18 +17,18 @@
   ],
   "idf.flashType": "JTAG",
   "idf.portWin": "COM6",
-  "files.associations": {
-    "feature_anim_player.h": "c",
-    "storage_manager.h": "c",
-    "feature_input_handler.h": "c",
-    "app_logic.h": "c",
-    "gpio_num.h": "c",
-    "esp_lcd_panel_ops.h": "c",
-    "event_manager.h": "c",
-    "freertos.h": "c",
-    "task.h": "c",
-    "esp_log.h": "c"
-  },
+  // "files.associations": {
+  //   "feature_anim_player.h": "c",
+  //   "storage_manager.h": "c",
+  //   "feature_input_handler.h": "c",
+  //   "app_logic.h": "c",
+  //   "gpio_num.h": "c",
+  //   "esp_lcd_panel_ops.h": "c",
+  //   "event_manager.h": "c",
+  //   "freertos.h": "c",
+  //   "task.h": "c",
+  //   "esp_log.h": "c"
+  // },
   "idf.currentSetup": "D:/Espressif/frameworks/esp-idf-v5.4.2/",
     "actionButtons": {
         "commands": [

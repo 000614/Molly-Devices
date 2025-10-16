@@ -3,7 +3,7 @@
 // 包含所有需要启动的组件
 #include "bsp_button.h"
 #include "event_manager.h"
-#include "feature_anim_player.h"
+// #include "feature_anim_player.h"
 #include "feature_button.h"
 #include "app_logic.h"
 #include "storage_manager.h"
@@ -16,7 +16,7 @@ void app_main(void)
     ESP_ERROR_CHECK(storage_init()); 
     // anim_player_init() 内部已经调用了 bsp_lcd_init()
     ESP_ERROR_CHECK(bsp_button_init()); 
-    ESP_ERROR_CHECK(anim_player_init());
+    // ESP_ERROR_CHECK(anim_player_init());
 
     // 2. 初始化消息队列
     event_queue_init();
@@ -27,7 +27,7 @@ void app_main(void)
     app_logic_task_start();
     
     // 3. 初始化并启动所有功能/服务任务
-    anim_player_task_start();
+    // anim_player_task_start();
     button_scan_task_start();
     
 
