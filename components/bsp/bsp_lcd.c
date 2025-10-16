@@ -162,9 +162,13 @@ esp_err_t bsp_lcd_set_power(bool on)
         if (on) {
             ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(s_panel_handle, true));
             ret = _bsp_lcd_set_brightness_internal(s_last_brightness); // 调用内部函数
+            // +++ 新增延时：给屏幕控制器一点稳定时间 +++
+            vTaskDelay(pdMS_TO_TICKS(20)); 
         } else {
             ESP_ERROR_CHECK(_bsp_lcd_set_brightness_internal(0)); // 调用内部函数
             ret = esp_lcd_panel_disp_on_off(s_panel_handle, false);
+            // +++ 新增延时：给屏幕控制器一点稳定时间 +++
+            vTaskDelay(pdMS_TO_TICKS(20)); 
         }
         // --- 临界区结束 ---
         xSemaphoreGive(s_lcd_mutex);
