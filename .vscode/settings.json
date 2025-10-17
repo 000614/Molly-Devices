@@ -48,6 +48,7 @@
         ]
     },
     "files.associations": {
-      "gpio.h": "c"
+      "gpio.h": "c",
+      "feature_4g_ml307.h": "c"
     }
 }
