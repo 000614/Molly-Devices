@@ -46,5 +46,8 @@
                 "args": ["IDF Clean"]
             }
         ]
+    },
+    "files.associations": {
+      "gpio.h": "c"
     }
 }
