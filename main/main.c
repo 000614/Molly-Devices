@@ -18,6 +18,7 @@ void app_main(void)
     ESP_ERROR_CHECK(bsp_button_init()); 
     ESP_ERROR_CHECK(mada_initialize()); 
     ESP_ERROR_CHECK(anim_player_init());
+    feature_4g_init();
 
     // 2. 初始化消息队列
     event_queue_init();

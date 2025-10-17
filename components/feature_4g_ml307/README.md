@@ -333,31 +333,6 @@ void HandleErrors(std::unique_ptr<AtModem>& modem) {
 }
 ```
 
-## 迁移指南 (v2.x → v3.0)
-
-### 旧版本 (v2.x)
-
-```cpp
-// 旧方式：需要明确指定模组类型和GPIO引脚
-Ml307AtModem modem(GPIO_NUM_13, GPIO_NUM_14, GPIO_NUM_15);
-NetworkStatus status = modem.WaitForNetworkReady();
-
-Ml307Http http(modem);
-http.Open("GET", "https://example.com");
-```
-
-### 新版本 (v3.0)
-
-```cpp
-// 新方式：自动检测模组类型，使用智能指针管理内存
-auto modem = AtModem::Detect(GPIO_NUM_13, GPIO_NUM_14, GPIO_NUM_15);
-NetworkStatus status = modem->WaitForNetworkReady();
-
-auto http = modem->CreateHttp(0);
-http->Open("GET", "https://example.com");
-// 无需手动 delete，unique_ptr 自动管理内存
-```
-
 ## 架构优势
 
 1. **自动化**: 无需手动指定模组类型，提高代码通用性
@@ -378,7 +353,3 @@ http->Open("GET", "https://example.com");
 5. `GetAtUart()` 返回 `shared_ptr<AtUart>`，支持安全共享
 6. 如果需要提前释放网络对象，可以调用 `.reset()` 方法
 7. 所有网络接口方法现在都有默认参数 `connect_id = -1`
-
-## 作者
-
-- 虾哥 Terrence (terrence@tenclass.com)

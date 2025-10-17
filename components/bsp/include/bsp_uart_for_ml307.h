@@ -1,30 +1,35 @@
+// bsp_uart_for_ml307.h
+
 #ifndef BSP_UART_FOR_ML307_H
 #define BSP_UART_FOR_ML307_H
 
-#include "driver/uart.h"
-#include "driver/gpio.h" 
+#include "driver/gpio.h" // 引入 gpio_num_t 类型
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// 定义ML307使用的UART端口和引脚
-#define ML307_UART_PORT      UART_NUM_2
-#define ML307_UART_TX_PIN    GPIO_NUM_14 // 根据您的实际硬件连接修改
-#define ML307_UART_RX_PIN    GPIO_NUM_13 // 根据您的实际硬件连接修改
-#define ML307_UART_RTS_PIN   (UART_PIN_NO_CHANGE)
-#define ML307_UART_CTS_PIN   (UART_PIN_NO_CHANGE)
-
-// 定义UART缓冲区大小和波特率
-#define ML307_UART_BAUD_RATE 921600
-#define ML307_UART_BUF_SIZE  (2048)
+/**
+ * @brief 封装ML307模块所需硬件配置的结构体
+ */
+typedef struct {
+    gpio_num_t uart_tx_pin; ///< UART发送引脚
+    gpio_num_t uart_rx_pin; ///< UART接收引脚
+    gpio_num_t pwrkey_pin;  ///< 电源按键引脚
+    int baud_rate;          ///< UART通信波特率
+} bsp_ml307_config_t;
 
 /**
- * @brief 初始化用于ML307模块的UART外设
+ * @brief 获取ML307模块的板级硬件配置
  *
- * @return esp_err_t ESP_OK表示成功, 否则失败
+ * @details 此函数从BSP层读取预定义的硬件参数，并填充到传入的配置结构体中。
+ *          应用层代码通过调用此函数来获取硬件信息，从而实现与具体硬件解耦。
+ *
+ * @param[out] config 一个指向 bsp_ml307_config_t 结构体的指针。函数将把获取到的配置写入此结构体。
  */
-esp_err_t bsp_uart_for_ml307_init(void);
+void bsp_ml307_get_config(bsp_ml307_config_t *config);
+
+
 
 #ifdef __cplusplus
 }

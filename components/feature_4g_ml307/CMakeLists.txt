@@ -23,6 +23,7 @@ idf_component_register(
         "feature_4g_ml307.cpp"
     INCLUDE_DIRS
         "include"
+        "."
     PRIV_INCLUDE_DIRS
         "."
     REQUIRES

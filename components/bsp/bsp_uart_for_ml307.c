@@ -1,41 +1,28 @@
+// bsp_uart_for_ml307.c
+
 #include "bsp_uart_for_ml307.h"
+#include "driver/gpio.h"
 #include "esp_log.h"
 
-static const char *TAG = "BSP_ML307_UART";
+static const char* TAG = "BSP_ML307";
 
-esp_err_t bsp_uart_for_ml307_init(void)
+
+#define MODEM_UART_TX_PIN   GPIO_NUM_14
+#define MODEM_UART_RX_PIN   GPIO_NUM_13
+#define MODEM_PWRKEY_PIN    GPIO_NUM_15
+#define MODEM_BAUD_RATE     115200
+// ====================================================================
+
+/**
+ * @brief 获取ML307模块的板级硬件配置的实现
+ */
+void bsp_ml307_get_config(bsp_ml307_config_t *config)
 {
-    // 1. 配置UART参数
-    uart_config_t uart_config = {
-        .baud_rate = ML307_UART_BAUD_RATE,
-        .data_bits = UART_DATA_8_BITS,
-        .parity    = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-        .source_clk = UART_SCLK_DEFAULT,
-    };
-
-    // 2. 安装UART驱动
-    esp_err_t ret = uart_driver_install(ML307_UART_PORT, ML307_UART_BUF_SIZE * 2, 0, 0, NULL, 0);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "UART驱动安装失败, 错误码: %d", ret);
-        return ret;
+    if (config != NULL) {
+        config->uart_tx_pin = MODEM_UART_TX_PIN;
+        config->uart_rx_pin = MODEM_UART_RX_PIN;
+        config->pwrkey_pin  = MODEM_PWRKEY_PIN;
+        config->baud_rate   = MODEM_BAUD_RATE;
     }
-
-    // 3. 设置UART参数
-    ret = uart_param_config(ML307_UART_PORT, &uart_config);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "UART参数配置失败, 错误码: %d", ret);
-        return ret;
-    }
-
-    // 4. 设置UART引脚
-    ret = uart_set_pin(ML307_UART_PORT, ML307_UART_TX_PIN, ML307_UART_RX_PIN, ML307_UART_RTS_PIN, ML307_UART_CTS_PIN);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "UART引脚设置失败, 错误码: %d", ret);
-        return ret;
-    }
-
-    ESP_LOGI(TAG, "ML307 UART初始化成功! Port: %d, Baud: %d", ML307_UART_PORT, ML307_UART_BAUD_RATE);
-    return ESP_OK;
 }
+
