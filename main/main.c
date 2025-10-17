@@ -8,6 +8,7 @@
 #include "feature_motor.h"
 #include "app_logic.h"
 #include "storage_manager.h"
+#include "feature_4g_ml307.h"  // ******* 新增4G模块头文件 *******
 
 #define TAG "MAIN_APP"
 
@@ -17,6 +18,7 @@ void app_main(void)
     ESP_ERROR_CHECK(bsp_button_init()); 
     ESP_ERROR_CHECK(mada_initialize()); 
     ESP_ERROR_CHECK(anim_player_init());
+    feature_4g_init();
 
     // 2. 初始化消息队列
     event_queue_init();
@@ -27,6 +29,9 @@ void app_main(void)
     app_logic_task_start();
     
     // 3. 初始化并启动所有功能/服务任务
+    if (feature_4g_task_start() != pdPASS) {
+        ESP_LOGE("MAIN", "启动4G模块失败，系统可能无法正常工作！");
+    }
     anim_player_task_start();
     button_scan_task_start();
     

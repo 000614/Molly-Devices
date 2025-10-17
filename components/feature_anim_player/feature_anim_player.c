@@ -113,7 +113,6 @@ static esp_err_t decode_jpeg_to_buffer(const char* jpeg_path, uint16_t* target_b
 
 static void jpeg_animation_task(void *pvParameters)
 {
-    ESP_LOGI(TAG, "JPEG动画播放任务已启动");
     char jpeg_path[64];
 
     while (1) {
@@ -173,15 +172,7 @@ void anim_player_task_start(void)
     const uint16_t frame_width = bsp_lcd_get_width();
     const uint16_t frame_height = bsp_lcd_get_height();
     const size_t frame_buffer_size = frame_width * frame_height * 2; // 假设为RGB565
-
-    ESP_LOGI(TAG, "================ MEMORY DIAGNOSTICS ================");
-    ESP_LOGI(TAG, "Screen Resolution: %dx%d", frame_width, frame_height);
-    ESP_LOGI(TAG, "Required single buffer size: %d bytes", frame_buffer_size);
-    ESP_LOGI(TAG, "Total free heap size: %d bytes", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-    ESP_LOGI(TAG, "Total free DMA-capable heap: %d bytes", heap_caps_get_free_size(MALLOC_CAP_DMA));
-    ESP_LOGI(TAG, "====================================================");
     
-    ESP_LOGI(TAG, "为DMA单缓冲分配内存...");
     g_frame_buffer = (uint16_t *)heap_caps_malloc(frame_buffer_size, MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA);
 
     if (!g_frame_buffer) {
